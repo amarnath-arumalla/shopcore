@@ -1,0 +1,10 @@
+# Build output (Maven creates this, never commit it)
+target/
+
+# Files our app writes at runtime
+data/
+*.tmp
+
+# Editor clutter
+.vscode/
+.idea/
