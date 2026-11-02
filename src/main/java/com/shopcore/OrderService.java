@@ -19,7 +19,7 @@ public class OrderService {
         return placeOrder(cart, List.of());
     }
 
-    public Order placeOrder(ShoppingCart cart, List<DiscountRule> discountRules) {
+    public synchronized Order placeOrder(ShoppingCart cart, List<DiscountRule> discountRules) {
         if (cart == null || cart.isEmpty()) {
             throw new IllegalStateException("Cannot place an order with an empty cart");
         }
@@ -67,7 +67,7 @@ public class OrderService {
         return order;
     }
 
-    public void cancelOrder(Order order) {
+    public synchronized void cancelOrder(Order order) {
         if (order == null) {
             throw new IllegalArgumentException("Order is required");
         }

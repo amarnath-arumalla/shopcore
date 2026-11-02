@@ -33,12 +33,12 @@ public class Product {
         this.stock = stock;
     }
 
-    public void addStock(int quantity) {
+    public synchronized void addStock(int quantity) {
         requirePositive(quantity);
         stock = stock + quantity;
     }
 
-    public void removeStock(int quantity) {
+    public synchronized void removeStock(int quantity) {
         requirePositive(quantity);
         if (quantity > stock) {
             throw new OutOfStockException(sku, stock, quantity);
@@ -51,11 +51,11 @@ public class Product {
         return price.times(quantity);
     }
 
-    public boolean isInStock() {
+    public synchronized boolean isInStock() {
         return stock > 0;
     }
 
-    public boolean isLowStock() {
+    public synchronized boolean isLowStock() {
         return stock <= 3;
     }
 
@@ -92,5 +92,5 @@ public class Product {
     public String getName() { return name; }
     public Category getCategory() { return category; }
     public Money getPrice() { return price; }
-    public int getStock() { return stock; }
+    public synchronized int getStock() { return stock; }
 }
