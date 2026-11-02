@@ -33,17 +33,17 @@ public class Order {
         this.status = OrderStatus.PLACED;
     }
 
-    public void pay() {
+    public synchronized void pay() {
         requireStatus(OrderStatus.PLACED, "pay");
         status = OrderStatus.PAID;
     }
 
-    public void ship() {
+    public synchronized void ship() {
         requireStatus(OrderStatus.PAID, "ship");
         status = OrderStatus.SHIPPED;
     }
 
-    public void cancel() {
+    public synchronized void cancel() {
         if (status == OrderStatus.SHIPPED || status == OrderStatus.CANCELLED) {
             throw new InvalidOrderStateException(orderId, status, "cancel");
         }
@@ -69,5 +69,5 @@ public class Order {
     public Money getDiscount() { return discount; }
     public String getDiscountDescription() { return discountDescription; }
     public Instant getCreatedAt() { return createdAt; }
-    public OrderStatus getStatus() { return status; }
+    public synchronized OrderStatus getStatus() { return status; }
 }
