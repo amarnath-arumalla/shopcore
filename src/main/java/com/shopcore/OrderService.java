@@ -11,16 +11,22 @@ import java.util.concurrent.locks.ReentrantLock;
 public class OrderService {
 
     private final ProductCatalog catalog;
+    private final StoreStatus storeStatus;
     private final AtomicInteger nextOrderNumber = new AtomicInteger(1001);
 
     // One lock per product SKU, created the first time that SKU is ordered.
     private final Map<String, ReentrantLock> skuLocks = new ConcurrentHashMap<>();
 
     public OrderService(ProductCatalog catalog) {
+        this(catalog, new StoreStatus());
+    }
+
+    public OrderService(ProductCatalog catalog, StoreStatus storeStatus) {
         if (catalog == null) {
             throw new IllegalArgumentException("Catalog is required");
         }
         this.catalog = catalog;
+        this.storeStatus = storeStatus;
     }
 
     public Order placeOrder(ShoppingCart cart) {
@@ -28,6 +34,9 @@ public class OrderService {
     }
 
     public Order placeOrder(ShoppingCart cart, List<DiscountRule> discountRules) {
+        if (!storeStatus.isOpen()) {
+            throw new StoreClosedException();
+        }
         if (cart == null || cart.isEmpty()) {
             throw new IllegalStateException("Cannot place an order with an empty cart");
         }
