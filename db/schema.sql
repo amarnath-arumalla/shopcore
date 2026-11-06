@@ -43,3 +43,9 @@ CREATE TABLE order_lines (
     quantity      INTEGER       NOT NULL CHECK (quantity > 0),
     UNIQUE (order_id, product_id)
 );
+
+-- "Show this customer's orders, newest first"
+CREATE INDEX idx_orders_customer_created ON orders (customer_id, created_at DESC);
+
+-- "Which orders contain this product?" (also speeds up the foreign key check when a product is deleted)
+CREATE INDEX idx_order_lines_product ON order_lines (product_id);
