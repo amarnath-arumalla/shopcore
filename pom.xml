@@ -14,6 +14,8 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.11.4</junit.version>
+        <flywayVersion>11.20.2</flywayVersion>
+        <postgresqlVersion>42.7.14</postgresqlVersion>
     </properties>
 
     <dependencies>
@@ -36,6 +38,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flywayVersion}</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/shopcore</url>
+                    <user>shopcore_app</user>
+                    <!-- Read from an environment variable. Never write a password in this file. -->
+                    <password>${env.SHOPCORE_DB_PASSWORD}</password>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.flywaydb</groupId>
+                        <artifactId>flyway-database-postgresql</artifactId>
+                        <version>${flywayVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresqlVersion}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
