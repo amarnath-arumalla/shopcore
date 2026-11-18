@@ -18,4 +18,9 @@ public class ProductService {
     public List<ProductResponse> listProducts() {
         return repository.findFirst(MAX_PRODUCTS);
     }
+
+    public ProductResponse getProduct(String sku) {
+        return repository.findBySku(sku)
+                .orElseThrow(() -> new ProductNotFoundException(sku));
+    }
 }
