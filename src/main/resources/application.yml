@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: shopcore
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopcore
+    username: shopcore_app
+    password: ${SHOPCORE_DB_PASSWORD}   # read from environment, never hard-coded
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000          # ms; fail fast instead of hanging (Lesson 25)
+  flyway:
+    enabled: true                       # validates V1..V8 on startup
+
+server:
+  port: 8080
