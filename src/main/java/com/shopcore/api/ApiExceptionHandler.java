@@ -74,4 +74,30 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setTitle("Internal error");
         return problem;
     }
+
+        @ExceptionHandler(InsufficientStockException.class)
+    public ProblemDetail handleInsufficientStock(InsufficientStockException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Insufficient stock");
+        problem.setProperty("sku", ex.getSku());
+        problem.setProperty("requested", ex.getRequested());
+        problem.setProperty("available", ex.getAvailable());
+        return problem;
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ProblemDetail handleCustomerNotFound(CustomerNotFoundException ex) {
+        // 422: the URL is fine and the JSON is valid, but it points at something that doesn't exist
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(422), ex.getMessage());
+        problem.setTitle("Unknown customer");
+        problem.setProperty("customerId", ex.getCustomerId());
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidOrderException.class)
+    public ProblemDetail handleInvalidOrder(InvalidOrderException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("Invalid order");
+        return problem;
+    }
 }

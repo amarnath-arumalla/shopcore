@@ -81,4 +81,21 @@ public class ProductCatalogRepository {
                 .query(PRODUCT_MAPPER)
                 .optional();
     }
+
+    public Optional<StockReservation> reserveStock(String sku, int quantity) {
+        return jdbc.sql("""
+                        UPDATE products
+                        SET stock = stock - :quantity
+                        WHERE sku = :sku
+                          AND stock >= :quantity
+                        RETURNING id, name, price
+                        """)
+                .param("quantity", quantity)
+                .param("sku", sku)
+                .query((rs, rowNum) -> new StockReservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getBigDecimal("price")))
+                .optional();
+    }
 }
