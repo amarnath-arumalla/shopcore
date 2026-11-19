@@ -23,4 +23,8 @@ public class ProductService {
         return repository.findBySku(sku)
                 .orElseThrow(() -> new ProductNotFoundException(sku));
     }
+
+    public ProductResponse createProduct(CreateProductRequest request) {
+        return repository.insert(request);
+    }
 }
