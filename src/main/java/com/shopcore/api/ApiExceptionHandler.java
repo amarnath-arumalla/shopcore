@@ -37,6 +37,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(StaleProductVersionException.class)
+    public ProblemDetail handleStaleVersion(StaleProductVersionException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Product was modified");
+        problem.setProperty("sku", ex.getSku());
+        problem.setProperty("yourVersion", ex.getExpectedVersion());
+        problem.setProperty("currentVersion", ex.getCurrentVersion());
+        return problem;
+    }
+
     // @Valid failures: add a "field -> message" map so the client knows exactly what to fix
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
