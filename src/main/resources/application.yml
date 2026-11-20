@@ -1,19 +1,23 @@
 spring:
   application:
     name: shopcore
+  profiles:
+    default: dev                      # no profile given → dev (safe for your laptop)
   datasource:
     url: jdbc:postgresql://localhost:5432/shopcore
     username: shopcore_app
-    password: ${SHOPCORE_DB_PASSWORD}   # read from environment, never hard-coded
+    password: ${SHOPCORE_DB_PASSWORD}
     hikari:
       maximum-pool-size: 10
-      connection-timeout: 3000          # ms; fail fast instead of hanging (Lesson 25)
+      connection-timeout: 3000
   flyway:
-    enabled: true                       # validates V1..V8 on startup
+    enabled: true
 
 server:
   port: 8080
 
-logging:
-  level:
-    org.springframework.jdbc.support.JdbcTransactionManager: DEBUG  
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true                 # /actuator/health/liveness and /readiness (Kubernetes, Phase 14)

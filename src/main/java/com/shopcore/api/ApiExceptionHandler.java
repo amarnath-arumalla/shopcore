@@ -67,15 +67,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleUnexpected(Exception ex) {
-        log.error("Unexpected error while handling request", ex);
+        log.error("Unexpected error while handling request", ex);   // this log line carries the requestId
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Something went wrong. Please try again later.");
         problem.setTitle("Internal error");
+        problem.setProperty("requestId", org.slf4j.MDC.get(RequestIdFilter.MDC_KEY));   // quote this to support
         return problem;
     }
 
-        @ExceptionHandler(InsufficientStockException.class)
+    @ExceptionHandler(InsufficientStockException.class)
     public ProblemDetail handleInsufficientStock(InsufficientStockException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problem.setTitle("Insufficient stock");
