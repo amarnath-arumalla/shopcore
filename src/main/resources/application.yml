@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: shopcore
+  profiles:
+    default: dev                      # no profile given → dev (safe for your laptop)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopcore
+    username: shopcore_app
+    password: ${SHOPCORE_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000
+  flyway:
+    enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true                 # /actuator/health/liveness and /readiness (Kubernetes, Phase 14)

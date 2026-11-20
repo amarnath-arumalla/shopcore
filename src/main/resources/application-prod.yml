@@ -1,0 +1,19 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health                       # expose as little as possible
+  endpoint:
+    health:
+      show-details: never                     # don't tell strangers your DB vendor/version
+
+logging:
+  structured:
+    format:
+      console: ecs                            # JSON log lines (Elastic Common Schema)
+
+springdoc:
+  api-docs:
+    enabled: false                            # don't publish the API map in prod
+  swagger-ui:
+    enabled: false

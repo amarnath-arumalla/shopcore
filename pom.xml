@@ -4,73 +4,108 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Spring Boot parent: manages versions of Hikari, PostgreSQL driver, Flyway, JUnit, plugins -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.2</version>
+        <relativePath/>
+    </parent>
+
+    <!-- KEEP YOUR EXISTING VALUES HERE -->
     <groupId>com.shopcore</groupId>
     <artifactId>shopcore</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>ShopCore</name>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.11.4</junit.version>
-        <flywayVersion>11.20.2</flywayVersion>
-        <postgresqlVersion>42.7.14</postgresqlVersion>
-        <hikariVersion>7.0.2</hikariVersion>
+        <java.version>21</java.version>
+        <!-- We have many classes with main(); tell Boot which one is the app -->
+        <start-class>com.shopcore.ShopCoreApplication</start-class>
     </properties>
 
     <dependencies>
+        <!-- Embedded Tomcat + Spring MVC + Jackson (JSON) -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
+
+        <!-- DataSource (HikariCP) + JdbcClient -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <!-- Runs Flyway migrations automatically at startup -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresqlVersion}</version>
             <scope>runtime</scope>
         </dependency>
-                <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${hikariVersion}</version>
+
+        <!-- JUnit + AssertJ + Mockito; your 46 existing tests run on this -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+                <!-- /actuator/health, /actuator/metrics, ... -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- OpenAPI + Swagger UI. 3.2.0 is the line built for Spring Boot 4.1.2 -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
-            </plugin>
+
+            <!-- Kept so "mvn flyway:info" still works from the command line -->
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>${flywayVersion}</version>
+                <version>${flyway.version}</version>
                 <configuration>
                     <url>jdbc:postgresql://localhost:5432/shopcore</url>
                     <user>shopcore_app</user>
-                    <!-- Read from an environment variable. Never write a password in this file. -->
                     <password>${env.SHOPCORE_DB_PASSWORD}</password>
                 </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.flywaydb</groupId>
                         <artifactId>flyway-database-postgresql</artifactId>
-                        <version>${flywayVersion}</version>
+                        <version>${flyway.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>${postgresqlVersion}</version>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
